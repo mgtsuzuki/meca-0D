@@ -1,6 +1,6 @@
 <header>
 <h1>
-  Bem vindo a Meca!
+  Bem vindo a Meca, <%= current_user.email %>!
 </h1>
 <h2>
   Estamos utilizando Rails <%= Rails.version %>
@@ -10,4 +10,5 @@
 <p>
   Vamos instalar a aplicacao aqui!
 </p>
+<%= link_to "Log out", destroy_user_session_path, method: :delete %>
 </section>
