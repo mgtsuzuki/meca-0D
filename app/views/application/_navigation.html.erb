@@ -1,5 +1,11 @@
 <p>
-  <%= link_to "Home", root_path %>
-  logado como: <%= current_user.email %>
+  <%= link_to "Home", root_path %> |
+  <% if current_user %>
+    Logado como: <%= current_user.email %> |
+    <%= link_to "Log out", destroy_user_session_path, method: :delete %>
+  <% else %>
+    <%= link_to "Sign Up", new_registration_path(resource) %> |
+    <%= link_to "Log In", new_session_path(resource) %>
+  <% end %>
 </p>
 <hr>

@@ -61,6 +61,8 @@ CREATE TABLE public.users (
     remember_created_at timestamp without time zone,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
+    first_name character varying NOT NULL,
+    last_name character varying NOT NULL,
     CONSTRAINT email_must_be_company_email CHECK (((email)::text ~* '^[^@]+@usp\.br$'::text))
 );
 
@@ -137,6 +139,7 @@ SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
 ('20201013222842'),
-('20201013230719');
+('20201013230719'),
+('20201014111842');
 
 
