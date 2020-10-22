@@ -40,6 +40,39 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
+-- Name: premios; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.premios (
+    id bigint NOT NULL,
+    nome character varying,
+    ano integer,
+    user_id integer,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: premios_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.premios_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: premios_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.premios_id_seq OWNED BY public.premios.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -87,6 +120,13 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: premios id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.premios ALTER COLUMN id SET DEFAULT nextval('public.premios_id_seq'::regclass);
+
+
+--
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -99,6 +139,14 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 ALTER TABLE ONLY public.ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: premios premios_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.premios
+    ADD CONSTRAINT premios_pkey PRIMARY KEY (id);
 
 
 --
@@ -125,6 +173,27 @@ CREATE UNIQUE INDEX index_users_on_email ON public.users USING btree (email);
 
 
 --
+-- Name: index_users_on_lower_email; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_lower_email ON public.users USING btree (lower((email)::text));
+
+
+--
+-- Name: index_users_on_lower_first_name_varchar_pattern_ops; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_lower_first_name_varchar_pattern_ops ON public.users USING btree (lower((first_name)::text) varchar_pattern_ops);
+
+
+--
+-- Name: index_users_on_lower_last_name_varchar_pattern_ops; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_lower_last_name_varchar_pattern_ops ON public.users USING btree (lower((last_name)::text) varchar_pattern_ops);
+
+
+--
 -- Name: index_users_on_reset_password_token; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -140,6 +209,8 @@ SET search_path TO "$user", public;
 INSERT INTO "schema_migrations" (version) VALUES
 ('20201013222842'),
 ('20201013230719'),
-('20201014111842');
+('20201014111842'),
+('20201015140455'),
+('20201021135736');
 
 

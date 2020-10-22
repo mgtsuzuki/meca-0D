@@ -1,0 +1,18 @@
+<nav>
+  <ul class="pagination">
+    <% if page > 0 %>
+      <li class="page-item">
+        <%= link_to "&larr; Previous".html_safe,
+              users_path(keywords: keywords, page: page - 1),
+              class: "page-link" %>
+      </li>
+    <% end %>
+    <% if @users.count > 9 %>
+      <li class="page-item">
+        <%= link_to "Next &rarr;".html_safe,
+              users_path(keywords: keywords, page: page + 1),
+              class: "page-link" %>
+      </li>
+    <% end %>
+  </ul>
+</nav>

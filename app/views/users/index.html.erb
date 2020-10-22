@@ -1,3 +1,45 @@
 <header>
-  <h1 class="h2">Users Search</h1>
+  <h1 class="h2">User Search</h1>
 </header>
+<sectionn class="search-form">
+  <%= form_for :users, method: :get do |f| %>
+    <div class="input-group input-group-lg">
+      <%= label_tag :keywords, nil, class: "sr-only" %>
+      <%= text_field_tag :keywords, nil, 
+        placeholder: "First Name, Last Name, or Email Address",
+          class: "form-control input-lg" %>
+      <span class="input-group-btn">
+        <%= submit_tag "Find Customers",
+           class: "btn btn-primary btn-lg" %>
+      </span>
+    </div>
+  <% end %>
+</section>
+
+<section class="search-results">
+  <header>
+    <h1 class="h3">Results</h1>
+  </header>
+  <% if @users.present? %>
+    <%= render partial: "pager",
+                 locals: { keywords: @keywords, page: @page } %>
+  <% end %>
+  <ol class="list-group">
+    <% @users.each do |user| %>
+      <li class="list-group-item">
+        <h3 class="float-right">
+          <small class="text-uppercase">Joined</small>
+          <%= l user.created_at.to_date %>
+        </h3>
+        <h2 class="h3"><%= user.first_name %> <%= user.last_name %></h2>
+        <h4><%= user.email %></h4>
+      </li>
+    <% end %>
+  </ol>
+  <% if @users.present? %>
+    <%= render partial: "pager",
+                 locals: { keywords: @keywords, page: @page } %>
+  <% end %>
+</section>
+
+
