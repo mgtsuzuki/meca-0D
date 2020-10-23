@@ -28,7 +28,7 @@ class UsersController < ApplicationController
                 order(user_search_term.order).
                 offset(PAGE_SIZE * @page).limit(PAGE_SIZE)
         else
-            @users = []
+            @users = User.all.offset(PAGE_SIZE * @page).limit(PAGE_SIZE)
         end
         render json: @users
     end
