@@ -8,22 +8,47 @@ const PARAM_PAGE = 'page=';
 
 function App() {
     const [hits, setHits] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+    // const [isLoading, setIsLoading] = useState(true);
     const [page, setPage] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isBottom, setIsBottom] = useState(false);
 
     async function fetchData(searchTerm, page = 0, reset = false) {
-        setIsLoading(true);
+        // setIsLoading(true);
         const result = await axios(`${PATH}?${PARAM_KEYWORD}${searchTerm}&${PARAM_PAGE}${page}`,);
         setHits(reset? result.data : [...hits,...result.data]);
         setPage(page);
-        setIsLoading(false);
+        // setIsLoading(false);
+        setIsBottom(false);
     }
 
     useEffect(() => {    
         fetchData(searchTerm, page);
     }, []);
     
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+    
+    function handleScroll() {
+        const scrollTop = (document.documentElement
+          && document.documentElement.scrollTop)
+          || document.body.scrollTop;
+        const scrollHeight = (document.documentElement
+          && document.documentElement.scrollHeight)
+          || document.body.scrollHeight;
+        if (scrollTop + window.innerHeight + 50 >= scrollHeight){
+          setIsBottom(true);
+        }
+    }
+
+    useEffect(() => {
+        if (isBottom) {
+            fetchData(searchTerm, page + 1);
+        }
+    }, [isBottom]);
+
     return (
         <div>
             <header>
@@ -36,7 +61,7 @@ function App() {
                 }}>
                     <div className="input-group input-group-lg">
                         <label className="sr-only">Keywords</label>
-                        <input type="text" name="keywords" id="keywords" placeholder="First Name, Last Name, or Email Address" className="form-control input-lg"
+                        <input type="text" placeholder="First Name, Last Name, or Email Address" className="form-control input-lg"
                             value={searchTerm}
                             onChange={(event) => setSearchTerm(event.target.value)}
                         />
@@ -64,12 +89,12 @@ function App() {
                         </li>
                     ))}
                 </ol>
-                {isLoading ?
+                {/* {isLoading ?
                     <div>Loading ...</div> :
                     <button className="btn btn-primary btn-lg" onClick={() => fetchData(searchTerm, page + 1)}>
                         More
                     </button>
-                }
+                } */}
             </section>
         </div>
     );
