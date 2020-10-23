@@ -82,7 +82,7 @@ function App() {
                         <li className="list-group-item" key={user.id}>
                             <h3 className="float-right">
                                 <small className="text-uppercase">Joined </small>
-                                {user.created_at}
+                                {user.created_at.slice(0,10)}
                             </h3>
                             <h2 className="h3">{user.first_name} {user.last_name}</h2>
                             <h4>{user.email}</h4>
