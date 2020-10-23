@@ -8,17 +8,14 @@ const PARAM_PAGE = 'page=';
 
 function App() {
     const [hits, setHits] = useState([]);
-    // const [isLoading, setIsLoading] = useState(true);
     const [page, setPage] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
     const [isBottom, setIsBottom] = useState(false);
 
     async function fetchData(searchTerm, page = 0, reset = false) {
-        // setIsLoading(true);
         const result = await axios(`${PATH}?${PARAM_KEYWORD}${searchTerm}&${PARAM_PAGE}${page}`,);
         setHits(reset? result.data : [...hits,...result.data]);
         setPage(page);
-        // setIsLoading(false);
         setIsBottom(false);
     }
 
@@ -89,12 +86,6 @@ function App() {
                         </li>
                     ))}
                 </ol>
-                {/* {isLoading ?
-                    <div>Loading ...</div> :
-                    <button className="btn btn-primary btn-lg" onClick={() => fetchData(searchTerm, page + 1)}>
-                        More
-                    </button>
-                } */}
             </section>
         </div>
     );
