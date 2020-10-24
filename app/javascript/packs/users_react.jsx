@@ -16,16 +16,16 @@ class App extends React.Component {
         this.onSearchSubmit = this.onSearchSubmit.bind(this);
       }
 
-    fetchData(searchTerm) {
+    fetchData() {
         this.setState({isLoading: true})
-        fetch(`${PATH}?${PARAM_KEYWORD}${searchTerm}`)
+        fetch(`${PATH}?${PARAM_KEYWORD}${this.state.searchTerm}`)
         .then(response => response.json())
         .then(result => this.setState({hits: result}))
         .catch(error => error);
     }
 
     componentDidMount() {    
-        this.fetchData(this.state.searchTerm);
+        this.fetchData();
     }
 
     onSearchChange(event) {
@@ -33,7 +33,7 @@ class App extends React.Component {
     }
 
     onSearchSubmit(event) {
-        this.fetchData(this.state.searchTerm);
+        this.fetchData();
         event.preventDefault();
     }
 
