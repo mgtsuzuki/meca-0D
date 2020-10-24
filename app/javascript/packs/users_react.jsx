@@ -15,13 +15,12 @@ class App extends React.Component {
             isLoading: true
         };
         this.fetchData = this.fetchData.bind(this);
+        this.handleScroll = this.handleScroll.bind(this);
         this.onSearchChange = this.onSearchChange.bind(this);
         this.onSearchSubmit = this.onSearchSubmit.bind(this);
-        this.onMoreClick = this.onMoreClick.bind(this);
-      }
+    }
 
     fetchData(page = 0) {
-        this.setState({isLoading: true})
         fetch(`${PATH}?${PARAM_KEYWORD}${this.state.searchTerm}&${PARAM_PAGE}${page}`)
         .then(response => response.json())
         .then(result => this.setState( prevState => {
@@ -35,8 +34,31 @@ class App extends React.Component {
         .catch(error => error);
     }
 
+    handleScroll() {
+        const scrollTop = (document.documentElement 
+            && document.documentElement.scrollTop)
+            || document.body.scrollTop;
+        const scrollHeight = (document.documentElement
+            && document.documentElement.scrollHeight)
+            || document.body.scrollHeight;
+        if (scrollTop + window.innerHeight + 50 >= scrollHeight){
+            this.setState({isLoading: true});
+        }
+    }
+
     componentDidMount() {    
         this.fetchData();
+        window.addEventListener('scroll', this.handleScroll);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.handleScroll);
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.isLoading && prevState.isLoading !== this.state.isLoading) {
+            this.fetchData(this.state.page + 1);
+        }
     }
 
     onSearchChange(event) {
@@ -48,12 +70,8 @@ class App extends React.Component {
         event.preventDefault();
     }
 
-    onMoreClick() {
-        this.fetchData(this.state.page + 1)
-    }
-
     render() {
-        const {hits, searchTerm, isLoading} = this.state;
+        const {hits, searchTerm} = this.state;
         return (
             <div>
                 {/* Search form - should be its own component */}
@@ -95,12 +113,6 @@ class App extends React.Component {
                         ))}
                     </ol>
                 </section>
-                { isLoading ?
-                    <div>Loading ...</div> :
-                    <button className="btn btn-primary btn-lg" onClick={this.onMoreClick}>
-                        More
-                    </button>
-                }
             </div>
         );
     }
