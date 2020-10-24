@@ -12,13 +12,13 @@ class App extends React.Component {
             hits: [],
             page: 0,
             searchTerm: '',
-            isBottom: false
+            isLoading: true
         };
         this.fetchData = this.fetchData.bind(this);
-        this.handleScroll = this.handleScroll.bind(this);
       }
 
     fetchData(searchTerm, page = 0, reset = false) {
+        this.setState({isLoading: true})
         fetch(`${PATH}?${PARAM_KEYWORD}${searchTerm}&${PARAM_PAGE}${page}`)
         .then(response => response.json())
         .then(result => this.setState( prevState => {
@@ -26,43 +26,18 @@ class App extends React.Component {
             return {
                 hits: updatedHits,
                 page: page,
-                isBottom: false
+                isBottom: false,
+                isLoading: false
             };
         }))
         .catch(error => error);
     }
-
-    handleScroll() {
-        const scrollTop = (document.documentElement
-          && document.documentElement.scrollTop)
-          || document.body.scrollTop;
-        const scrollHeight = (document.documentElement
-          && document.documentElement.scrollHeight)
-          || document.body.scrollHeight;
-        if (scrollTop + window.innerHeight + 50 >= scrollHeight){
-          this.setState({isBottom: true});
-        }
-    }
-
     componentDidMount() {    
         this.fetchData(this.state.searchTerm, this.state.page);
-        window.addEventListener('scroll', this.handleScroll);
-    }
-    
-    componentWillUnmount() {
-        window.removeEventListener('scroll', this.handleScroll);
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if (prevState.isBottom !== this.state.isBottom) {
-            if (this.state.isBottom) {
-                this.fetchData(this.state.searchTerm, this.state.page + 1);
-            }
-        }
     }
 
     render() {
-        const {hits, searchTerm} = this.state;
+        const {hits, searchTerm, page, isLoading} = this.state;
         return (
             <div>
                 <header>
@@ -104,6 +79,12 @@ class App extends React.Component {
                         ))}
                     </ol>
                 </section>
+                { isLoading ?
+                    <div>Loading ...</div> :
+                    <button className="btn btn-primary btn-lg" onClick={ () => {this.fetchData(searchTerm, page + 1);} }>
+                        More
+                    </button>
+                }
             </div>
         );
     }
