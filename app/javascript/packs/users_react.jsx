@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom'
 
-const PATH = '/users/api';
+const PATH = '/users';
 const PARAM_KEYWORD = 'keywords=';
 const PARAM_PAGE = 'page=';
 
@@ -15,6 +15,8 @@ class App extends React.Component {
             isLoading: true
         };
         this.fetchData = this.fetchData.bind(this);
+        this.onSearchChange = this.onSearchChange.bind(this);
+        this.onSearchSubmit = this.onSearchSubmit.bind(this);
       }
 
     fetchData(searchTerm, page = 0, reset = false) {
@@ -32,27 +34,35 @@ class App extends React.Component {
         }))
         .catch(error => error);
     }
+
     componentDidMount() {    
         this.fetchData(this.state.searchTerm, this.state.page);
+    }
+
+    onSearchChange(event) {
+        this.setState({ searchTerm: event.target.value });
+    }
+
+    onSearchSubmit(event) {
+        this.fetchData(this.state.searchTerm, 0, true);
+        event.preventDefault();
     }
 
     render() {
         const {hits, searchTerm, page, isLoading} = this.state;
         return (
             <div>
+                {/* Search form - should be its own component */}
                 <header>
                     <h1 className="h2">User Search</h1>
                 </header>
                 <section className="search-form">
-                    <form onSubmit={(event) => {
-                        this.fetchData(searchTerm, 0, true);
-                        event.preventDefault();
-                    }}>
+                    <form onSubmit={ this.onSearchSubmit }>
                         <div className="input-group input-group-lg">
                             <label className="sr-only">Keywords</label>
                             <input type="text" placeholder="First Name, Last Name, or Email Address" className="form-control input-lg"
                                 value={searchTerm}
-                                onChange={ event => {this.setState({searchTerm: event.target.value})} }
+                                onChange={this.onSearchChange}
                             />
                             <span className="input-group-btn">
                                 <button type="submit" className="btn btn-primary btn-lg">
@@ -62,6 +72,8 @@ class App extends React.Component {
                         </div>
                     </form>
                 </section>
+
+                {/* Results listing - should be its own component */}
                 <section className="search-results">
                     <header>
                         <h1 className="h3">Results</h1>
