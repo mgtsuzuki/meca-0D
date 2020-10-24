@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom'
-import axios from 'axios';
 
 const PATH = '/users/api';
 const PARAM_KEYWORD = 'keywords=';
@@ -19,16 +18,18 @@ class App extends React.Component {
         this.handleScroll = this.handleScroll.bind(this);
       }
 
-    async fetchData(searchTerm, page = 0, reset = false) {
-        const result = await axios(`${PATH}?${PARAM_KEYWORD}${searchTerm}&${PARAM_PAGE}${page}`,);
-        this.setState(prevState => { 
-            const updatedHits = reset? result.data : [...prevState.hits,...result.data]
+    fetchData(searchTerm, page = 0, reset = false) {
+        fetch(`${PATH}?${PARAM_KEYWORD}${searchTerm}&${PARAM_PAGE}${page}`)
+        .then(response => response.json())
+        .then(result => this.setState( prevState => {
+            const updatedHits = reset? result : [...prevState.hits,...result]
             return {
                 hits: updatedHits,
                 page: page,
                 isBottom: false
             };
-        });
+        }))
+        .catch(error => error);
     }
 
     handleScroll() {
