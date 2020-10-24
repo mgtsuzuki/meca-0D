@@ -3,40 +3,29 @@ import ReactDOM from 'react-dom'
 
 const PATH = '/users';
 const PARAM_KEYWORD = 'keywords=';
-const PARAM_PAGE = 'page=';
 
 class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             hits: [],
-            page: 0,
             searchTerm: '',
-            isLoading: true
         };
         this.fetchData = this.fetchData.bind(this);
         this.onSearchChange = this.onSearchChange.bind(this);
         this.onSearchSubmit = this.onSearchSubmit.bind(this);
       }
 
-    fetchData(searchTerm, page = 0, reset = false) {
+    fetchData(searchTerm) {
         this.setState({isLoading: true})
-        fetch(`${PATH}?${PARAM_KEYWORD}${searchTerm}&${PARAM_PAGE}${page}`)
+        fetch(`${PATH}?${PARAM_KEYWORD}${searchTerm}`)
         .then(response => response.json())
-        .then(result => this.setState( prevState => {
-            const updatedHits = reset? result : [...prevState.hits,...result]
-            return {
-                hits: updatedHits,
-                page: page,
-                isBottom: false,
-                isLoading: false
-            };
-        }))
+        .then(result => this.setState({hits: result}))
         .catch(error => error);
     }
 
     componentDidMount() {    
-        this.fetchData(this.state.searchTerm, this.state.page);
+        this.fetchData(this.state.searchTerm);
     }
 
     onSearchChange(event) {
@@ -44,7 +33,7 @@ class App extends React.Component {
     }
 
     onSearchSubmit(event) {
-        this.fetchData(this.state.searchTerm, 0, true);
+        this.fetchData(this.state.searchTerm);
         event.preventDefault();
     }
 
@@ -91,12 +80,6 @@ class App extends React.Component {
                         ))}
                     </ol>
                 </section>
-                { isLoading ?
-                    <div>Loading ...</div> :
-                    <button className="btn btn-primary btn-lg" onClick={ () => {this.fetchData(searchTerm, page + 1);} }>
-                        More
-                    </button>
-                }
             </div>
         );
     }
